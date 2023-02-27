@@ -1,0 +1,29 @@
+﻿Frame height (cm),MfgDimNames,48,51,54,56,58,61,Measuring mode
+Seattube length,A1,562,586,611,631,653,673,nominal
+Seattube length,A2,450,480,510,540,570,600,bottom bracket to top of seattube
+Seattube length,A3,424,454,484,514,544,559,bottom bracket to top of top tube
+Top tube length,B,504,533,555,571,587,604,
+Top tube horizontal,C,516,551,576,591,606,621,center headtube to center seatpost/seattube
+Headtube angle (°),D,70,71,"71,5","71,5",72,72,
+Seattube angle (°),E,76,74,73,73,73,73,
+Wheelbase,F,1035,1041,1051,1067,1077,1092,
+Chainstay length,G,440,440,440,440,440,440,
+Headtube length,H,115,130,150,170,190,210,
+Bottom bracket drop,I,70,70,70,70,70,70,distance of bottom bracket to hub level
+Bottom bracket height,K,286,286,286,286,286,286,distance to ground
+Fork rake,L,45,45,45,45,45,45,
+Slope,M,116,109,103,93,84,74,top tube level distance front to rear
+Wheel radius,N,356,356,356,356,356,356,incl. tires
+Standover height,O,749,773,798,822,847,871,top of top tube to ground*
+Fork build height,P,410,410,410,410,410,410,incl. lower headset cups
+Front wheel - bottom bracket,Q,605,621,631,636,646,662,
+Reach,R,380,389,398,407,416,424,"center bottom bracket to center headtube, horizontal"
+Stack,S,546,564,583,603,624,643,"center bottom bracket to center headtube, vertical"
+Stack/Reach (1:x),,"1,44","1,45","1,46","1,48","1,50","1,52",ratio stack to reach
+Seatpost diameter,,"27,2","27,2","27,2","27,2","27,2","27,2",
+Stem length,,60,70,70,80,90,100,center-center
+Stem angle (°),,-6,-6,-6,-6,-6,-6,
+Handlebar diameter,,"31,8","31,8","31,8","31,8","31,8","31,8",
+Assembled spacers,,"23,2 + 10 + 10 + 5",,,,,,
+Handlebar width,,420,420,420,440,440,440,center-center
+Cranklength,,170,170,"172,5","172,5",175,175,

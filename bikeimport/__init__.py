@@ -8,8 +8,8 @@ from .stevens import StevensImporter
 importers = []
 importers.append(StevensImporter)
 
-# from giant import GiantImporter
-
+from .giant import GiantImporter
+importers.append(GiantImporter)
 
 def is_compatible(mfg, model, year, importer):
     """
@@ -17,8 +17,8 @@ def is_compatible(mfg, model, year, importer):
 
     Importers can limit compatibility for mfg names, models and years.
     """
-    # MFG_NAMES is a required attribute for all importers
-    if mfg not in importer.MFG_NAMES:
+    # MFG_NAME is a required attribute for all importers
+    if mfg != normalize(importer.MFG_NAME):
         return False
 
     # Only check if importer has a restriction on model names
@@ -37,19 +37,32 @@ def is_compatible(mfg, model, year, importer):
     return True
 
 
-def create_data_importer(mfg, model, year, *args, **kwargs):
+def available_importer_names():
+    """Return manufacturer names for available importers"""
+    mfg_names = []
+    for imp in importers:
+        mfg_names.append(imp.MFG_NAME)
+    return mfg_names
+
+
+def normalize(word):
+    return word.lower().replace(' ', '-')
+
+def instantiate_importer(mfg, model, year, *args, **kwargs):
     """
-    Select concrete data importer for given manufacturer, model and name.
+    Instantiate a concrete importer for given manufacturer, model and name.
 
     kwargs will be forwarded to concrete importer.
 
     Parameters:
-        mfg (str) : manufacturer will be automatically capitalized
-        model (str): model name
+        mfg (str) : manufacturer will be normalized
+        model (str): model name will be normalized
         year (str): model year
     """
+
+    _mfg = normalize(mfg)
+    _model = normalize(model)
     for imp in importers:
-        if is_compatible(mfg, model, year, imp):
-            return imp(model, year, **kwargs)
-    # if mfg == 'giant':
-    #     return GiantImpoerter(model,year)
+        if is_compatible(_mfg, _model, year, imp):
+            return imp(_model, year, **kwargs)
+    raise KeyError(f"No importer for manufacturer/model {_mfg} {_model} found")

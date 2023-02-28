@@ -3,9 +3,9 @@ from .dataimporter import DataImporter
 
 class StevensImporter(DataImporter):
     #: Compatible Manufacturer names for this importer, fixed
-    MFG_NAMES = ['Stevens']
+    MFG_NAME = 'stevens'
     #: Models for this importer (if the website is good models should work)
-    MODELS = ['Prestige', 'Xenith', 'Arcalis', 'Superprestige']
+    MODELS = ['prestige', 'xenith', 'arcalis', 'super-prestige']
     #: model years for which this importer works
     YEARS = range(2019, 2024)
 
@@ -21,7 +21,7 @@ class StevensImporter(DataImporter):
 
     """
     def __init__(self, model, year, *args, **kwargs):
-        super().__init__("Stevens", model, year, **kwargs)
+        super().__init__(self.MFG_NAME, model, year, **kwargs)
         #: Stevens specific information map to 'standardized' properties
         self.col_map = {
             "A1": "SeatTube",

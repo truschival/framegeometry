@@ -50,7 +50,7 @@ class DataImporter(ABC):
 
     def __str__(self):
         """Print info on which specific importer is used."""
-        return self.mfg+"-"+self.model+"-"+str(self.year)
+        return self.mfg+"_"+self.model+"_"+str(self.year)
 
     @abstractmethod
     def import_data(self, source):

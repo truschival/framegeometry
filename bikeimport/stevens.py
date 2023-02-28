@@ -5,7 +5,7 @@ class StevensImporter(DataImporter):
     #: Compatible Manufacturer names for this importer, fixed
     MFG_NAME = 'stevens'
     #: Models for this importer (if the website is good models should work)
-    MODELS = ['prestige', 'xenith', 'arcalis', 'super-prestige']
+    MODELS = ['prestige', 'xenith', 'arcalis', 'vapor', 'super-prestige']
     #: model years for which this importer works
     YEARS = range(2019, 2024)
 

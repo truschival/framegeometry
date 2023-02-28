@@ -8,7 +8,7 @@ class GiantImporter(DataImporter):
     #: Compatible Manufacturer names for this importer, fixed
     MFG_NAME = 'giant'
     #: Models for this importer (if the website is good models should work)
-    MODELS = ['tcx-advanced-pro-1']
+    MODELS = ['tcx-advanced-pro-1', 'tcr-advanced-disc-1+']
 
     def __init__(self, model, year, *args, **kwargs):
         super().__init__(self.MFG_NAME, model, year, **kwargs)

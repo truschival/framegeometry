@@ -23,11 +23,11 @@ class GiantImporter(DataImporter):
             "J": "BBdrop",
             "M": "StandOverHeight",
             "K": "Reach",
-            "L": "Stack"
+            "L": "Stack",
+            "F": 'ForkRake'
         }
 
-    def import_data(self, source):
-        df = pd.read_csv(source, header=None)
+    def standardize_data(self, df):
         # Column 1 should contain MFG_FRAME_KEY='MfgDimNames'
         # Column 2 is Giants descriptions for letters
         df = df.T  # Transpose to make properties columns and sizes the index

@@ -42,7 +42,8 @@ class DataImporter(ABC):
             "Stack above bottom bracket": 'Stack',
             "top tube to floor": 'StandOverHeight',
             "Top tube length (horizontal)": 'TopTube_hz',
-            "Wheelbase": 'Wheelbase'
+            "Wheelbase": 'Wheelbase',
+            "Fork Rake": 'ForkRake'
         }
 
         if 'verbose' in kwargs:
@@ -53,17 +54,17 @@ class DataImporter(ABC):
         return self.mfg+"_"+self.model+"_"+str(self.year)
 
     @abstractmethod
-    def import_data(self, source):
+    def standardize_data(self, source):
         """
-        Import and reformat data to match standardized format and columns.
+        Cleanup data to match standardized format and columns.
 
         Manufacturer specific method has to be implemented in derived classes.
 
             Parameters:
-                    source (str): file or URL that Pandas.read_csv can process
+                    df (pandas.DataFrame): input data
 
             Returns:
-                    Pandas DataFrame
+                    pandas.DataFrame - clean, standardized data
 
         """
         pass

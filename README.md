@@ -29,4 +29,8 @@ My current approach is:
 
 ## Comparison
 
-TBD
+Well, this is a nice tool but you want to head to 
+[Geometry Geeks](https://geometrygeeks.bike/) 
+for bike comparison. 
+They have a much nicer interface and a vastly larger database. But I am here 
+for learning... 

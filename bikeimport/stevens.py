@@ -33,11 +33,11 @@ class StevensImporter(DataImporter):
             "I": "BBdrop",
             "O": "StandOverHeight",
             "R": "Reach",
-            "S": "Stack"
+            "S": "Stack",
+            "L": 'ForkRake'
         }
 
-    def import_data(self, source):
-        df = pd.read_csv(source, header=None)
+    def standardize_data(self, df):
         # Column 2 is mfg_dim_names and some values are not mapped,
         # replace values with manufacturer descriptions from column 1
         df[1].fillna(df[0], inplace=True)

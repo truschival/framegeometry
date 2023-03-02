@@ -1,5 +1,11 @@
 import pandas as pd
 from abc import (ABC, abstractmethod,)
+import datetime
+
+from .globals import (
+    get_bike_categories,
+    normalize,
+)
 
 class DataImporter(ABC):
     """
@@ -15,21 +21,20 @@ class DataImporter(ABC):
     MODEL_KEY = "Model"
     #: column header for year
     YEAR_KEY = "Year"
-    #: column header for manufacturer specific frame size (54,56 or S,M,L)
+    #: Category of bike ('endurance', 'race', 'gravel', 'cyclocross')
+    CAT_KEY = "Category"
+    #: column header for manufacturer specific frame size (54,56 or S, M, L)
     MFG_FRAME_KEY = 'MfgDimNames'
 
-    def __init__(self, mfg, model, year, *args, **kwargs):
+    def __init__(self, mfg, *args, **kwargs):
         """
         Base constructor to setup common attributes.
 
             Parameters:
                     mfg (str): manufacturer name
-                    model (str): bike model name
-                    year (int) : model year
         """
+
         self.mfg = mfg
-        self.model = model
-        self.year = year
         self.verbose = False
         self.df = pd.DataFrame()
         self.col_map = {
@@ -53,8 +58,9 @@ class DataImporter(ABC):
         """Print info on which specific importer is used."""
         return self.mfg+"_"+self.model+"_"+str(self.year)
 
+
     @abstractmethod
-    def standardize_data(self, source):
+    def standardize_data(self, df):
         """
         Cleanup data to match standardized format and columns.
 
@@ -69,6 +75,18 @@ class DataImporter(ABC):
         """
         pass
 
+    @abstractmethod
+    def scrape(self, url):
+        """Scrape data from website and return model as DataFrame
+
+        Args:
+            url (str): url of the model website containing geometry data 
+
+        Returns:
+            pandas.DataFrame: non-standardized dataframe 
+        """        
+        pass
+
     def std_cols(self):
         """
         Return 'standardized' property names that can be used for comparison.
@@ -78,12 +96,14 @@ class DataImporter(ABC):
         """
         return self.col_map.values()
 
+
     def print_mapping(self):
         """Print mapping table for manufacturer columns to standard columns."""
         for k, v in self.col_map.items():
             print(f"  {k} -> {v}")
 
-    def get_data(self, full=False):
+
+    def append_meta_info(self, df, model=None, year=None, category=None):
         """
         Return the imported, cleaned dataframe for this importer.
 
@@ -93,17 +113,21 @@ class DataImporter(ABC):
             Returns:
                     Pandas DataFrame
         """
-        data = self.df.copy()
-        data.insert(0, self.MFG_KEY, self.mfg)
-        data.insert(0, self.MODEL_KEY, self.model)
-        data.insert(0, self.YEAR_KEY, self.year)
-        data.set_index([self.MFG_KEY,
+        if not year:
+            year = int(datetime.date.today().year)
+        df.insert(0, self.YEAR_KEY, year)
+
+        df.insert(0, self.MODEL_KEY, normalize(model))
+        
+        if category and normalize(category) in get_bike_categories():
+            df.insert(0, self.CAT_KEY, normalize(category))
+
+        df.insert(0, self.MFG_KEY, self.mfg)
+        
+        df.set_index([self.MFG_KEY,
                         self.MODEL_KEY,
                         self.YEAR_KEY,
                         self.MFG_FRAME_KEY],
                        drop=True,
                        inplace=True)
-        if full:
-            return data
-        else:
-            return data[self.std_cols()]
+        return df

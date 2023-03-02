@@ -1,14 +1,14 @@
 import pandas as pd
+import requests
+
+from bs4 import BeautifulSoup
+
 from .dataimporter import DataImporter
+from .globals import get_header
 
 class StevensImporter(DataImporter):
     #: Compatible Manufacturer names for this importer, fixed
     MFG_NAME = 'stevens'
-    #: Models for this importer (if the website is good models should work)
-    MODELS = ['prestige', 'xenith', 'arcalis', 'vapor', 'super-prestige']
-    #: model years for which this importer works
-    YEARS = range(2019, 2024)
-
     """
     Cleanup data from stevens bikes table as of 2023
 
@@ -20,8 +20,8 @@ class StevensImporter(DataImporter):
     'Frame height (cm),MfgDimNames,48,51,54,56,58,61,Measuring mode'
 
     """
-    def __init__(self, model, year, *args, **kwargs):
-        super().__init__(self.MFG_NAME, model, year, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(self.MFG_NAME, **kwargs)
         #: Stevens specific information map to 'standardized' properties
         self.col_map = {
             "A1": "SeatTube",
@@ -46,26 +46,54 @@ class StevensImporter(DataImporter):
         df = df.T       # stevens has frame sizes in columns, we want row
         df.columns = df.iloc[0]
         df = df.rename(columns=self.col_map)
-        df.set_index(self.MFG_FRAME_KEY, drop=False, inplace=True)
+        df.set_index(self.MFG_FRAME_KEY, inplace=True)
+        # discard all other columns
+        df = df[self.std_cols()]
+        # sometimes the csv/google spreadsheet exports empty cols/rows
+        df.dropna(how='all', inplace=True)
 
         # Delete lines that make no sense
         # Frame height is leftover row from import, containing human readable
         # descriptions (column1)
         df.drop(index=self.MFG_FRAME_KEY, inplace=True)
-
         # drop useless row, Measuring mode is explanation for table
-        df.drop('Measuring mode', inplace=True, errors='ignore')
-        df.drop(columns="Assembled spacers", inplace=True, errors='ignore')
-        # sometimes the csv/google spreadsheet exports empty cols/rows
-        df.dropna(how='all', inplace=True)
+        df.drop(index='Measuring Mode', inplace=True, errors='raise')
+
         # cleanup common string issues
         df = df.applymap(
             lambda x: str(x.replace(',', '.')) if type(x) == str else x)
         df = df.applymap(
             lambda x: str(x.replace('°', '')) if type(x) == str else x)
 
-        # make sure standardized columns are numeric
-        df.loc[:, self.std_cols()] = df[self.std_cols()].apply(pd.to_numeric)
+        # make sure columns are numeric
+        df = df.apply(pd.to_numeric)
 
-        self.df = df
+        # Return dataframe without index    
+        return df.reset_index()
+
+
+    def scrape(self, url):
+        r=requests.get(url, headers=get_header())
+        soup = BeautifulSoup(r.content, 'html5lib') 
+        geometrytable = soup.find('table', attrs={'id': 'geometrie'})
+        col_head = ['Desc', 'MfgDimNames']
+
+        head = geometrytable.find('thead')
+        row = head.find('tr')
+        for td in row.findAll('th', attrs={'class': 'value'}):
+            col_head.append(td.text.strip())
+        
+        col_head.append('Measuring Mode')
+        df = pd.DataFrame(data=col_head).T
+
+        body = geometrytable.find('tbody')
+        for row in body.findAll('tr'):
+            prop = []
+            # description is a <th>
+            desc = row.find('th')
+            prop.append(desc.text.strip())
+
+            for td in row.findAll('td'):
+                prop.append(td.text.strip())
+            df = pd.concat([df, pd.DataFrame(prop).T])
         return df

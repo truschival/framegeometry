@@ -13,6 +13,9 @@ importers.append(StevensImporter)
 from .giant import GiantImporter
 importers.append(GiantImporter)
 
+from .cube import CubeImporter
+importers.append(CubeImporter)
+
 def is_compatible(mfg, importer):
     """
     Check if a given importer is compatible with mfg, model and year.

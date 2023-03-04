@@ -1,26 +1,16 @@
+"""Scrape and reformat bike geometry data of stevens bikes."""
 import pandas as pd
-import requests
-
-from bs4 import BeautifulSoup
-
 from .dataimporter import DataImporter
-from .globals import get_header
+
 
 class StevensImporter(DataImporter):
+    """Website scraper and geometry table parser for stevens bikes (2023)."""
+
     #: Compatible Manufacturer names for this importer, fixed
     MFG_NAME = 'stevens'
-    """
-    Cleanup data from stevens bikes table as of 2023
 
-    Expects a table with a column-header 'MfgDimNames' on the column with
-    symbols for frame sizes e.g. (A1, A2...) on the website this is the second
-    column.
-    Stevens uses frame sizes as columns and properties as rows. So the first
-    line of the csv should look like:
-    'Frame height (cm),MfgDimNames,48,51,54,56,58,61,Measuring mode'
-
-    """
     def __init__(self, *args, **kwargs):
+        """Create a stevens data importer."""
         super().__init__(self.MFG_NAME, **kwargs)
         #: Stevens specific information map to 'standardized' properties
         self.col_map = {
@@ -38,7 +28,8 @@ class StevensImporter(DataImporter):
         }
 
     def standardize_data(self, df):
-        # Column 2 is mfg_dim_names and some values are not mapped,
+        """Map raw data to well-known properties."""
+        # Column 2 contains the codes, some values are not mapped,
         # replace values with manufacturer descriptions from column 1
         df[1].fillna(df[0], inplace=True)
         # manufacturer descriptions no longer needed
@@ -68,21 +59,20 @@ class StevensImporter(DataImporter):
         # make sure columns are numeric
         df = df.apply(pd.to_numeric)
 
-        # Return dataframe without index    
+        # Return dataframe without index
         return df.reset_index()
 
-
     def scrape(self, url):
-        r=requests.get(url, headers=get_header())
-        soup = BeautifulSoup(r.content, 'html5lib') 
+        """Retrieve and parse data from the website given by url."""
+        soup = self.get_soup(url)
         geometrytable = soup.find('table', attrs={'id': 'geometrie'})
-        col_head = ['Desc', 'MfgDimNames']
+        col_head = [self.MFG_DESC_KEY, self.MFG_FRAME_KEY]
 
         head = geometrytable.find('thead')
         row = head.find('tr')
         for td in row.findAll('th', attrs={'class': 'value'}):
             col_head.append(td.text.strip())
-        
+
         col_head.append('Measuring Mode')
         df = pd.DataFrame(data=col_head).T
 

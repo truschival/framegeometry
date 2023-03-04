@@ -1,20 +1,20 @@
+"""Common superclass for all manufacturer specific importers."""
 import pandas as pd
 from abc import (ABC, abstractmethod,)
 import datetime
+import requests
+from bs4 import BeautifulSoup
 
 from .globals import (
     get_bike_categories,
     normalize,
+    get_header,
 )
 
-class DataImporter(ABC):
-    """
-    Abstract importer super-class with common constants and methods for
-    manufacturer specific importer classes.
 
-    Individual importers can restrict their compatibility with the attributes
-    MFG_NAMES (str[]), MODELS (str[]) and YEARS (int[])
-    """
+class DataImporter(ABC):
+    """Common superclass for all manufacturer specific importers."""
+
     #: column header for manufacturer
     MFG_KEY = "Mfg"
     #: column header for bike model
@@ -25,15 +25,15 @@ class DataImporter(ABC):
     CAT_KEY = "Category"
     #: column header for manufacturer specific frame size (54,56 or S, M, L)
     MFG_FRAME_KEY = 'MfgDimNames'
+    #: column for manufacturer description
+    MFG_DESC_KEY = 'Desc'
 
     def __init__(self, mfg, *args, **kwargs):
-        """
-        Base constructor to setup common attributes.
+        """Create base class and setup common attributes.
 
-            Parameters:
-                    mfg (str): manufacturer name
+        Parameters:
+                mfg (str): manufacturer name
         """
-
         self.mfg = mfg
         self.verbose = False
         self.df = pd.DataFrame()
@@ -58,7 +58,6 @@ class DataImporter(ABC):
         """Print info on which specific importer is used."""
         return self.mfg+"_"+self.model+"_"+str(self.year)
 
-
     @abstractmethod
     def standardize_data(self, df):
         """
@@ -77,15 +76,28 @@ class DataImporter(ABC):
 
     @abstractmethod
     def scrape(self, url):
-        """Scrape data from website and return model as DataFrame
+        """Scrape data from website and return model as DataFrame.
 
         Args:
-            url (str): url of the model website containing geometry data 
+            url (str): url of the model website containing geometry data
 
         Returns:
-            pandas.DataFrame: non-standardized dataframe 
-        """        
+            pandas.DataFrame: non-standardized dataframe
+        """
         pass
+
+    def get_soup(self, url):
+        """Create a BeautifulSoup parser for given URL.
+
+        Args:
+            url (str): url of bike model website containing geometry data
+
+        Returns:
+            BeautifulSoup parser object
+        """
+        r = requests.get(url, headers=get_header())
+        soup = BeautifulSoup(r.content, 'html5lib')
+        return soup
 
     def std_cols(self):
         """
@@ -96,12 +108,10 @@ class DataImporter(ABC):
         """
         return self.col_map.values()
 
-
     def print_mapping(self):
         """Print mapping table for manufacturer columns to standard columns."""
         for k, v in self.col_map.items():
             print(f"  {k} -> {v}")
-
 
     def append_meta_info(self, df, model=None, year=None, category=None):
         """
@@ -118,16 +128,16 @@ class DataImporter(ABC):
         df.insert(0, self.YEAR_KEY, year)
 
         df.insert(0, self.MODEL_KEY, normalize(model))
-        
+
         if category and normalize(category) in get_bike_categories():
             df.insert(0, self.CAT_KEY, normalize(category))
 
         df.insert(0, self.MFG_KEY, self.mfg)
-        
+
         df.set_index([self.MFG_KEY,
-                        self.MODEL_KEY,
-                        self.YEAR_KEY,
-                        self.MFG_FRAME_KEY],
-                       drop=True,
-                       inplace=True)
+                      self.MODEL_KEY,
+                      self.YEAR_KEY,
+                      self.MFG_FRAME_KEY],
+                     drop=True,
+                     inplace=True)
         return df

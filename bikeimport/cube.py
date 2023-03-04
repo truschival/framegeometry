@@ -1,20 +1,18 @@
+"""Scrape and reformat bike geometry data of cube bikes."""
 import pandas as pd
-import requests
-
-from bs4 import BeautifulSoup
-
 from .dataimporter import DataImporter
-from .globals import get_header
+
 
 class CubeImporter(DataImporter):
+    """Website scraper and geometry table parser for www.cube.eu (2023)."""
+
     #: Compatible Manufacturer names for this importer, fixed
     MFG_NAME = 'cube'
-    """
-    Scrape an reformat bike geometries from www.cube.eu
-    """
+
     def __init__(self, *args, **kwargs):
+        """Create an importer for cube bike data."""
         super().__init__(self.MFG_NAME, **kwargs)
-        #: Stevens specific information map to 'standardized' properties
+        #: Map mfg property names to 'standardized' properties
         self.col_map = {
             "A": "SeatTube",
             "B": "TopTube_hz",
@@ -29,9 +27,10 @@ class CubeImporter(DataImporter):
         }
 
     def standardize_data(self, df):
+        """Map raw data to well-known properties."""
         # manufacturer descriptions no longer needed
         df.drop(columns=[1], inplace=True)
-        df = df.T       #  frame sizes in columns, we want row
+        df = df.T  # frame sizes in columns, we want row
         df.columns = df.iloc[0]
         df = df.rename(columns=self.col_map)
         df.set_index(self.MFG_FRAME_KEY, inplace=True)
@@ -49,15 +48,15 @@ class CubeImporter(DataImporter):
         # make sure columns are numeric
         df = df.apply(pd.to_numeric)
 
-        # Return dataframe without index    
+        # Return dataframe without index
         return df.reset_index()
 
-
     def scrape(self, url):
-        r=requests.get(url, headers=get_header())
-        soup = BeautifulSoup(r.content, 'html5lib') 
-        geometrytable = soup.find('table', attrs={'id': 'e-geometry-integration-table'})
-        col_head = [self.MFG_FRAME_KEY,'Desc']
+        """Retrieve and parse data from the website given by url."""
+        soup = self.get_soup(url)
+        geometrytable = soup.find('table',
+                                  attrs={'id': 'e-geometry-integration-table'})
+        col_head = [self.MFG_FRAME_KEY, self.MFG_DESC_KEY]
 
         head = geometrytable.find('thead')
         for td in head.findAll('td', attrs={'class': 'geometry-table-field'}):
@@ -69,10 +68,11 @@ class CubeImporter(DataImporter):
         for row in body.findAll('tr'):
             prop = []
             # description is a <th>
-            desc = row.find('th', attrs={'class' : 'e-geometry-table-row'})
+            desc = row.find('th', attrs={'class': 'e-geometry-table-row'})
             prop.append(desc.attrs['data-id'])
             prop.append(desc.text.strip())
-            for td in row.findAll('td', attrs={'class' : 'geometry-table-field'}):
+            for td in row.findAll('td',
+                                  attrs={'class': 'geometry-table-field'}):
                 prop.append(td.text.strip())
             df = pd.concat([df, pd.DataFrame(prop).T])
         return df

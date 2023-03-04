@@ -40,8 +40,6 @@ class StevensImporter(DataImporter):
         df.set_index(self.MFG_FRAME_KEY, inplace=True)
         # discard all other columns
         df = df[self.std_cols()]
-        # sometimes the csv/google spreadsheet exports empty cols/rows
-        df.dropna(how='all', inplace=True)
 
         # Delete lines that make no sense
         # Frame height is leftover row from import, containing human readable
@@ -50,15 +48,7 @@ class StevensImporter(DataImporter):
         # drop useless row, Measuring mode is explanation for table
         df.drop(index='Measuring Mode', inplace=True, errors='raise')
 
-        # cleanup common string issues
-        df = df.applymap(
-            lambda x: str(x.replace(',', '.')) if type(x) == str else x)
-        df = df.applymap(
-            lambda x: str(x.replace('°', '')) if type(x) == str else x)
-
-        # make sure columns are numeric
-        df = df.apply(pd.to_numeric)
-
+        df = self.make_std_cols_numeric(df)
         # Return dataframe without index
         return df.reset_index()
 

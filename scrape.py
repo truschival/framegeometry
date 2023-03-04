@@ -3,25 +3,25 @@
 import sys
 import os.path
 import time
+
+from argparse import ArgumentParser
 import pandas as pd
 from bikeimport import (
-    available_importer_names,
     instantiate_importer
     )
-from argparse import ArgumentParser
 
 def parse(cmdline):
     parser = ArgumentParser(
         description='''
-        This program scrapes bike geometry tables from websites and 
+        This program scrapes bike geometry tables from websites and
         'standardizes' the data across manufacturers.
-        
-        The expected input is a comma-separated-values (CSV) file with the 
+
+        The expected input is a comma-separated-values (CSV) file with the
         columns 'mfg', 'model', 'year', 'category', 'url'.
         - mfg : Manufacturer {'stevens', 'giant', 'canyon'}
         - model : (string model name)
         - category : advertised use ('race', 'endurance', 'gravel', 'cyclocross')
-        - year: model year 
+        - year: model year
         ''')
 
     parser.add_argument("-d", "--dest", dest="database",
@@ -51,13 +51,13 @@ def main():
         print(
             f"{i}/{total}\t{record['mfg']} {record['model']} {record['year']}",
             end='')
-        
+
         importer = instantiate_importer(record['mfg'])
         df = importer.scrape(record['url'])
         df = importer.standardize_data(df)
-        df = importer.append_meta_info(df, 
-            model=record['model'], 
-            category=record['category'], 
+        df = importer.append_meta_info(df,
+            model=record['model'],
+            category=record['category'],
             year=record['year'])
         db = pd.concat([db,df])
 

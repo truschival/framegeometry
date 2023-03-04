@@ -5,16 +5,18 @@ Module collects all manufacturer specific classes
 """
 
 from .globals import normalize
+
 from .stevens import StevensImporter
+from .giant import GiantImporter
+from .cube import CubeImporter
+from .rose import RoseImporter
 
 importers = []
 importers.append(StevensImporter)
-
-from .giant import GiantImporter
 importers.append(GiantImporter)
-
-from .cube import CubeImporter
 importers.append(CubeImporter)
+importers.append(RoseImporter)
+
 
 def is_compatible(mfg, importer):
     """
@@ -43,7 +45,8 @@ def instantiate_importer(mfg, *args, **kwargs):
     kwargs will be forwarded to concrete importer.
 
     Parameters:
-        mfg (str) : manufacturer will be normalized
+    -----------
+    mfg (str) : manufacturer will be normalized
     """
 
     _mfg = normalize(mfg)
@@ -51,4 +54,3 @@ def instantiate_importer(mfg, *args, **kwargs):
         if is_compatible(_mfg, imp):
             return imp(**kwargs)
     raise KeyError(f"No importer for manufacturer: {_mfg} found")
-

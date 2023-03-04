@@ -8,12 +8,10 @@ SCRAPE_HEADERS = {
       }
 
 def get_header():
-    global SCRAPE_HEADERS
     return SCRAPE_HEADERS
 
-
 def get_bike_categories():
-    return ['endurance', 'race', 'gravel', 'cyclocross']
+    return ['endurance', 'race', 'gravel', 'cyclocross', 'aero']
 
 def normalize(word):
     return word.strip().lower().replace(' ', '-')

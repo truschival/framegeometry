@@ -1,8 +1,8 @@
 """Common superclass for all manufacturer specific importers."""
-import pandas as pd
 from abc import (ABC, abstractmethod,)
 import datetime
 import requests
+import pandas as pd
 from bs4 import BeautifulSoup
 
 from .globals import (
@@ -32,7 +32,8 @@ class DataImporter(ABC):
         """Create base class and setup common attributes.
 
         Parameters:
-                mfg (str): manufacturer name
+        -----------
+        mfg (str): manufacturer name
         """
         self.mfg = mfg
         self.verbose = False
@@ -54,9 +55,33 @@ class DataImporter(ABC):
         if 'verbose' in kwargs:
             self.verbose = kwargs['verbose']
 
-    def __str__(self):
-        """Print info on which specific importer is used."""
-        return self.mfg+"_"+self.model+"_"+str(self.year)
+    def make_std_cols_numeric(self, df):
+        """
+        Prune dataframe of common errors.
+
+        Prune empty columns, make sure strings do not contain comma or
+        degree symbols.
+
+        Parameters:
+        -----------
+        df (pandas.DataFrame) : to prune
+
+        Return:
+        -------
+        pandas.DataFrame
+
+        """
+        # cleanup common string issues
+        df = df.applymap(
+            lambda x: str(x.replace(',', '.')) if isinstance(x, str) else x)
+        df = df.applymap(
+            lambda x: str(x.replace('°', '')) if isinstance(x, str) else x)
+
+        # make sure columns are numeric
+        df.loc[:, self.std_cols()] = df[self.std_cols()].apply(pd.to_numeric)
+
+        # Return dataframe without index
+        return df
 
     @abstractmethod
     def standardize_data(self, df):
@@ -65,37 +90,41 @@ class DataImporter(ABC):
 
         Manufacturer specific method has to be implemented in derived classes.
 
-            Parameters:
-                    df (pandas.DataFrame): input data
+        Parameters:
+        -----------
+        df (pandas.DataFrame): input data
 
-            Returns:
-                    pandas.DataFrame - clean, standardized data
+        Returns:
+        -------
+        pandas.DataFrame - clean, standardized data
 
         """
-        pass
 
     @abstractmethod
     def scrape(self, url):
         """Scrape data from website and return model as DataFrame.
 
-        Args:
-            url (str): url of the model website containing geometry data
+        Parameters:
+        -----------
+        url (str): url of the model website containing geometry data
 
         Returns:
-            pandas.DataFrame: non-standardized dataframe
+        --------
+        pandas.DataFrame: non-standardized dataframe
         """
-        pass
 
     def get_soup(self, url):
         """Create a BeautifulSoup parser for given URL.
 
-        Args:
-            url (str): url of bike model website containing geometry data
+        Parameters:
+        -----------
+        url (str): url of bike model website containing geometry data
 
         Returns:
-            BeautifulSoup parser object
+        --------
+        BeautifulSoup parser object
         """
-        r = requests.get(url, headers=get_header())
+        r = requests.get(url, headers=get_header(), timeout=5)
         soup = BeautifulSoup(r.content, 'html5lib')
         return soup
 
@@ -103,8 +132,9 @@ class DataImporter(ABC):
         """
         Return 'standardized' property names that can be used for comparison.
 
-            Returns:
-                    Array of (str)
+        Returns:
+        --------
+        Array of (str)
         """
         return self.col_map.values()
 
@@ -117,11 +147,13 @@ class DataImporter(ABC):
         """
         Return the imported, cleaned dataframe for this importer.
 
-            Parameters:
-                    full (bool): non-standard fields are included
+        Parameters:
+        -----------
+        full (bool): non-standard fields are included
 
-            Returns:
-                    Pandas DataFrame
+        Returns:
+        --------
+        Pandas DataFrame
         """
         if not year:
             year = int(datetime.date.today().year)

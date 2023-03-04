@@ -42,15 +42,7 @@ class GiantImporter(DataImporter):
         # sometimes the csv/google spreadsheet exports empty cols/rows
         df.dropna(how='all', inplace=True)
 
-        # cleanup common string issues
-        df = df.applymap(
-            lambda x: str(x.replace(',', '.')) if type(x) == str else x)
-        df = df.applymap(
-            lambda x: str(x.replace('°', '')) if type(x) == str else x)
-
-        # make sure columns are numeric
-        df = df.apply(pd.to_numeric)
-
+        df = self.make_std_cols_numeric(df)
         # Return dataframe without index
         return df.reset_index()
 

@@ -14,17 +14,17 @@ class StevensImporter(DataImporter):
         super().__init__(self.MFG_NAME, **kwargs)
         #: Stevens specific information map to 'standardized' properties
         self.col_map = {
-            "A1": "SeatTube",
-            "C": "TopTube_hz",
-            "D": "HeadTubeAngle",
-            "E": "SeatTubeAngle",
-            "F": "Wheelbase",
-            "G": "Chainstay",
-            "I": "BBdrop",
-            "O": "StandOverHeight",
-            "R": "Reach",
-            "S": "Stack",
-            "L": 'ForkRake'
+            "a1":self.std_column_map["SeatTube"],
+            "c": self.std_column_map["TopTube_hz"],
+            "d": self.std_column_map["HeadTubeAngle"],
+            "e": self.std_column_map["SeatTubeAngle"],
+            "f": self.std_column_map["Wheelbase"],
+            "g": self.std_column_map["Chainstay"],
+            "i": self.std_column_map["BBdrop"],
+            "o": self.std_column_map["StandOverHeight"],
+            "r": self.std_column_map["Reach"],
+            "s": self.std_column_map["Stack"],
+            "l": self.std_column_map['ForkRake']
         }
 
     def standardize_data(self, df):
@@ -35,6 +35,7 @@ class StevensImporter(DataImporter):
         # manufacturer descriptions no longer needed
         df.drop(columns=[0], inplace=True)
         df = df.T       # stevens has frame sizes in columns, we want row
+        df.iloc[0] = df.iloc[0].apply(str.lower)
         df.columns = df.iloc[0]
         df = df.rename(columns=self.col_map)
         df.set_index(self.MFG_FRAME_KEY, inplace=True)

@@ -10,12 +10,14 @@ from .stevens import StevensImporter
 from .giant import GiantImporter
 from .cube import CubeImporter
 from .rose import RoseImporter
+from .bmc import BmcImporter
 
 importers = []
 importers.append(StevensImporter)
 importers.append(GiantImporter)
 importers.append(CubeImporter)
 importers.append(RoseImporter)
+importers.append(BmcImporter)
 
 
 def is_compatible(mfg, importer):
@@ -27,9 +29,7 @@ def is_compatible(mfg, importer):
     # MFG_NAME is a required attribute for all importers
     if mfg != normalize(importer.MFG_NAME):
         return False
-
     return True
-
 
 def available_importer_names():
     """Return manufacturer names for available importers"""

@@ -14,23 +14,24 @@ class RoseImporter(DataImporter):
         super().__init__(self.MFG_NAME, **kwargs)
         #: Map mfg property names to 'standardized' properties
         self.col_map = {
-            "a": "SeatTube",
-            "b": "TopTube_hz",
-            "d": "HeadTubeAngle",
-            "e": "SeatTubeAngle",
-            "h": "Wheelbase",
-            "g": "Chainstay",
-            "f": "BBdrop",
-            "m": "StandOverHeight",
-            "j": "Reach",
-            "k": "Stack",
-            "p": 'ForkRake'
+            "a": self.std_column_map["SeatTube"],
+            "b": self.std_column_map["TopTube_hz"],
+            "d": self.std_column_map["HeadTubeAngle"],
+            "e": self.std_column_map["SeatTubeAngle"],
+            "h": self.std_column_map["Wheelbase"],
+            "g": self.std_column_map["Chainstay"],
+            "f": self.std_column_map["BBdrop"],
+            "m": self.std_column_map["StandOverHeight"],
+            "j": self.std_column_map["Reach"],
+            "k": self.std_column_map["Stack"],
+            "p": self.std_column_map['ForkRake']
         }
 
     def standardize_data(self, df):
         """Map raw data to well-known properties."""
         df = df.T  # Transpose to make properties columns and sizes the index
         # Column 1 is Roses descriptions for letters
+        df.iloc[0] = df.iloc[0].apply(str.lower)
         df.iloc[0, 0] = self.MFG_FRAME_KEY
         # Line 0 is the column header
         df.columns = df.iloc[0]

@@ -16,17 +16,17 @@ class DataImporter(ABC):
     """Common superclass for all manufacturer specific importers."""
 
     #: column header for manufacturer
-    MFG_KEY = "Mfg"
+    MFG_KEY = "mfg"
     #: column header for bike model
-    MODEL_KEY = "Model"
+    MODEL_KEY = "model"
     #: column header for year
-    YEAR_KEY = "Year"
+    YEAR_KEY = "year"
     #: Category of bike ('endurance', 'race', 'gravel', 'cyclocross')
-    CAT_KEY = "Category"
+    CAT_KEY = "category"
     #: column header for manufacturer specific frame size (54,56 or S, M, L)
-    MFG_FRAME_KEY = 'MfgDimNames'
+    MFG_FRAME_KEY = 'mfg_dim_names'
     #: column for manufacturer description
-    MFG_DESC_KEY = 'Desc'
+    MFG_DESC_KEY = 'desc'
 
     def __init__(self, mfg, *args, **kwargs):
         """Create base class and setup common attributes.
@@ -38,18 +38,19 @@ class DataImporter(ABC):
         self.mfg = mfg
         self.verbose = False
         self.df = pd.DataFrame()
-        self.col_map = {
-            "Bottom Bracket drop (below axis)": 'BBdrop',
-            "Head Tube Angle": 'HeadTubeAngle',
-            "Chain stay length": 'Chainstay',
-            "Horizontal reach": 'Reach',
-            "normalized length of seat tube": 'SeatTube',
-            "angle of seat tube (horizontal)": 'SeatTubeAngle',
-            "Stack above bottom bracket": 'Stack',
-            "top tube to floor": 'StandOverHeight',
-            "Top tube length (horizontal)": 'TopTube_hz',
-            "Wheelbase": 'Wheelbase',
-            "Fork Rake": 'ForkRake'
+
+        self.std_column_map = {
+            'BBdrop'            : 'bb_drop',
+            'HeadTubeAngle'     : 'head_tube_angle',
+            'Chainstay'         : 'chain_stay',
+            'Reach'             : 'reach',
+            'SeatTube'          : 'seat_tube',
+            'SeatTubeAngle'     : 'seat_tube_angle',
+            'Stack'             : 'stack',
+            'StandOverHeight'   : 'stand_over_height',
+            'TopTube_hz'        : 'top_tube',
+            'Wheelbase'         : 'wheel_base',
+            'ForkRake'          : 'fork_rake'
         }
 
         if 'verbose' in kwargs:

@@ -29,7 +29,6 @@ year,mfg,model,category,url
 2019,stevens,vapor,cyclocross,https://www.stevensbikes.de/2019/index.php?bik_id=11&cou=US&lang=en_US
 2019,stevens,prestige,cyclocross,https://www.stevensbikes.de/2019/index.php?bik_id=10&cou=US&lang=en_US
 2019,stevens,izoard-pro-disc,race,https://www.stevensbikes.de/2019/index.php?bik_id=212&cou=US&lang=en_US
-
 2023,giant,tcx-advanced-pro-2,cyclocross,https://www.giant-bicycles.com/de/tcx-advanced-pro-2
 2023,giant,defy-advanced-1,endurance,https://www.giant-bicycles.com/de/defy-advanced-1-2023
 2023,giant,tcr-advanced-sl,race,https://www.giant-bicycles.com/de/tcr-advanced-sl
@@ -41,3 +40,23 @@ year,mfg,model,category,url
 2023,rose,xlite-04-force-axs,race,https://www.rosebikes.com/rose-xlite-04-force-axs-2710895
 2023,rose,backroad-al,gravel,https://www.rosebikes.com/rose-backroad-al-grx-rx600-2696842
 2023,rose,backroad,gravel,https://www.rosebikes.com/rose-backroad-grx-rx810-2696924
+2023,bmc,roadmachine-four,endurance,https://www.bmc-switzerland.com/intl_en/bmc-roadmachine-four-23.html
+2023,bmc,roadmachine-six,endurance,https://www.bmc-switzerland.com/intl_en/23-roadmachine-six-endurance-road-bikes.html
+2023,bmc,roadmachine-x-al-one,endurance,https://www.bmc-switzerland.com/intl_en/bmc-roadmachine-x-al-one-22.html
+2023,bmc,roadmachine-x-one,endurance,https://www.bmc-switzerland.com/intl_en/bmc-roadmachine-x-one-22.html
+2023,bmc,bmc-timemachine-road-01-one,race,https://www.bmc-switzerland.com/intl_en/bmc-timemachine-road-01-one-23.html
+2023,bmc,bmc-timemachine-road-01-two,race,https://www.bmc-switzerland.com/intl_en/bmc-timemachine-road-01-two-23.html
+2023,bmc,bmc-timemachine-road-01-three,race,https://www.bmc-switzerland.com/intl_en/bmc-timemachine-road-01-three-23.html
+2023,bmc,bmc-kaius-01-two,cyclocross,https://www.bmc-switzerland.com/intl_en/bmc-kaius-01-two-23.html
+2023,bmc,bmc-kaius-01-three,cyclocross,https://www.bmc-switzerland.com/intl_en/bmc-kaius-01-three-23.html
+2023,bmc,bmc-urs-01-one,gravel,https://www.bmc-switzerland.com/intl_en/bmc-urs-01-one-23.html
+2023,bmc,bmc-urs-lt-two,gravel,https://www.bmc-switzerland.com/intl_en/23-unrestricted-lt-two-gravel-bikes.html
+2023,bmc,bmc-urs-al-three,gravel,https://www.bmc-switzerland.com/intl_en/23-unrestricted-al-three-gravel-bikes.html
+2023,cube,AGREE C:62 SLX,race,https://www.cube.eu/de-de/cube-agree-c-62-slx-liquidblue-n-blue/678300
+2023,cube,LITENING AERO C:68X SLT,race,https://www.cube.eu/de-de/cube-litening-aero-c-68x-slt-prizmblue-n-black/679400
+2023,cube,LITENING AIR C:68X SLT,race,https://www.cube.eu/de-de/cube-litening-air-c-68x-slt-carbon-n-rainbow/679700
+2023,cube,CROSS RACE C:68X TE,cyclocross,https://www.cube.eu/de-de/cube-cross-race-c-68x-te-carbon-n-flashyellow/588700
+2023,cube,CROSS RACE PRO,cyclocross,https://www.cube.eu/de-de/cube-cross-race-pro-grey-n-red/688200
+2023,cube,AXIAL WS C:62 SLX,endurance,https://www.cube.eu/de-de/cube-axial-ws-c-62-slx-team-ws/629600
+2023,cube,NUROAD C:62 SLT,gravel,https://www.cube.eu/de-de/cube-nuroad-c-62-slt-flatprizmblack-n-black/580330
+2023,cube,NUROAD RACE,gravel,https://www.cube.eu/de-de/cube-nuroad-race-blue-n-black/680205

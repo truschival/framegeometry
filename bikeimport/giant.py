@@ -14,17 +14,17 @@ class GiantImporter(DataImporter):
         super().__init__(self.MFG_NAME, **kwargs)
         #: Map mfg property names to 'standardized' properties
         self.col_map = {
-            "A": "SeatTube",
-            "C": "TopTube_hz",
-            "E": "HeadTubeAngle",
-            "B": "SeatTubeAngle",
-            "H": "Wheelbase",
-            "I": "Chainstay",
-            "J": "BBdrop",
-            "M": "StandOverHeight",
-            "K": "Reach",
-            "L": "Stack",
-            "F": 'ForkRake'
+            "a": self.std_column_map["SeatTube"],
+            "c": self.std_column_map["TopTube_hz"],
+            "e": self.std_column_map["HeadTubeAngle"],
+            "b": self.std_column_map["SeatTubeAngle"],
+            "h": self.std_column_map["Wheelbase"],
+            "i": self.std_column_map["Chainstay"],
+            "j": self.std_column_map["BBdrop"],
+            "m": self.std_column_map["StandOverHeight"],
+            "k": self.std_column_map["Reach"],
+            "l": self.std_column_map["Stack"],
+            "f": self.std_column_map["ForkRake"]
         }
 
     def standardize_data(self, df):
@@ -33,6 +33,7 @@ class GiantImporter(DataImporter):
         # Column 2 is Giants descriptions for letters
         df = df.T  # Transpose to make properties columns and sizes the index
         # Line 0 is the column header
+        df.iloc[0] = df.iloc[0].apply(str.lower)
         df.columns = df.iloc[0]
         df = df.rename(columns=self.col_map)
         df = df.drop([0, 1])  # MfgDimNames and row with Giant descriptions

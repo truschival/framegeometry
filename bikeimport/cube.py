@@ -14,16 +14,16 @@ class CubeImporter(DataImporter):
         super().__init__(self.MFG_NAME, **kwargs)
         #: Map mfg property names to 'standardized' properties
         self.col_map = {
-            "A": "SeatTube",
-            "B": "TopTube_hz",
-            "D": "HeadTubeAngle",
-            "C": "SeatTubeAngle",
-            "G": "Wheelbase",
-            "E": "Chainstay",
-            "H": "BBdrop",
-            "T 80": "StandOverHeight",
-            "R": "Reach",
-            "S": "Stack",
+            "a": self.std_column_map["SeatTube"],
+            "b": self.std_column_map["TopTube_hz"],
+            "d": self.std_column_map["HeadTubeAngle"],
+            "c": self.std_column_map["SeatTubeAngle"],
+            "g": self.std_column_map["Wheelbase"],
+            "e": self.std_column_map["Chainstay"],
+            "h": self.std_column_map["BBdrop"],
+            "t 80": self.std_column_map["StandOverHeight"],
+            "r": self.std_column_map["Reach"],
+            "s": self.std_column_map["Stack"]
         }
 
     def standardize_data(self, df):
@@ -31,6 +31,7 @@ class CubeImporter(DataImporter):
         # manufacturer descriptions no longer needed
         df.drop(columns=[1], inplace=True)
         df = df.T  # frame sizes in columns, we want row
+        df.iloc[0] = df.iloc[0].apply(str.lower)
         df.columns = df.iloc[0]
         df = df.rename(columns=self.col_map)
         df.set_index(self.MFG_FRAME_KEY, inplace=True)

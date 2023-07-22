@@ -11,6 +11,7 @@ from .giant import GiantImporter
 from .cube import CubeImporter
 from .rose import RoseImporter
 from .bmc import BmcImporter
+from .ridley import RidleyImporter
 
 importers = []
 importers.append(StevensImporter)
@@ -18,6 +19,7 @@ importers.append(GiantImporter)
 importers.append(CubeImporter)
 importers.append(RoseImporter)
 importers.append(BmcImporter)
+importers.append(RidleyImporter)
 
 
 def is_compatible(mfg, importer):

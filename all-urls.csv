@@ -60,3 +60,4 @@ year,mfg,model,category,url
 2023,cube,AXIAL WS C:62 SLX,endurance,https://www.cube.eu/de-de/cube-axial-ws-c-62-slx-team-ws/629600
 2023,cube,NUROAD C:62 SLT,gravel,https://www.cube.eu/de-de/cube-nuroad-c-62-slt-flatprizmblack-n-black/580330
 2023,cube,NUROAD RACE,gravel,https://www.cube.eu/de-de/cube-nuroad-race-blue-n-black/680205
+2023,ridley,fenix slic,endurance,./csv/ridley_fenix_slic.csv
